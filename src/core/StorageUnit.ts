@@ -1,6 +1,6 @@
 export abstract class StorageUnit {
     public capacity: number;
-    protected used: number;
+    public used: number;
 
     constructor(capacity: number){
         this.capacity = capacity;

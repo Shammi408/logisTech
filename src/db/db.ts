@@ -1,3 +1,4 @@
+// src/db/db.ts
 import { Pool } from "pg";
 
 const pool = new Pool({
@@ -6,18 +7,37 @@ const pool = new Pool({
   database: process.env.PGDATABASE || "logistech",
   password: process.env.PGPASSWORD || "logi_pass",
   port: Number(process.env.PGPORT || 5433),
-  max: 10
+  max: 10,
+});
+
+// Prevent Node from crashing on pool errors (e.g. when Postgres is shutdown by tests)
+pool.on("error", (err) => {
+  // Log the pool error; do NOT rethrow
+  // This avoids an unhandled 'error' event when the DB is terminated by docker-compose down
+  // You can extend this to send the error to your logger instead of console.error.
+  console.error("PG Pool error:", err && err.message ? err.message : err);
 });
 
 export default {
-  pool,
+  // simple query helper
+  query: (text: string, params?: any[]) => pool.query(text, params),
+
   // helper to get a client for transactions
-  async getClient() {
+  getClient: async () => {
     const client = await pool.connect();
     return client;
   },
-  // simple query helper
-  async query(text: string, params?: any[]) {
-    return pool.query(text, params);
-  }
+
+  // expose the pool if needed
+  pool,
+
+  // gracefully close the pool (useful in tests / app shutdown)
+  end: async () => {
+    try {
+      await pool.end();
+      // optional: console.log("PG pool closed");
+    } catch (e) {
+      console.warn("Error closing PG pool:", e);
+    }
+  },
 };

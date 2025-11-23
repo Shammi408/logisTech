@@ -14,11 +14,10 @@ services:
       # automatically run migrations placed in ./migrations on first start
       - ./migrations:/docker-entrypoint-initdb.d:ro
 
-  # optional: lightweight admin UI for DB (useful)
   pgadmin:
     image: dpage/pgadmin4:7
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@local
+      PGADMIN_DEFAULT_EMAIL: admin@example.com  
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "8080:80"

@@ -11,6 +11,7 @@ export class Truck extends StorageUnit {
     }
 
     occupy_space(amount: number): boolean {
+        if (amount <= 0) return false; 
         if ( amount <= this.getFreeSpace()){
             this.used += amount;
             return true;
@@ -41,10 +42,7 @@ export class Truck extends StorageUnit {
         while(this.stack.length){
             const p = this.popPackage()!;
             if(p.trackingId === targetTrackingId){
-                while(temp.length){
-                    const pk = temp.pop()!;
-                    this.pushPackage(pk);
-                }
+                while(temp.length){ this.pushPackage(temp.pop()!); }
                 return true;
             }else{
                 temp.push(p);
@@ -52,6 +50,50 @@ export class Truck extends StorageUnit {
         }
         //not found restore everything
         while(temp.length) this.pushPackage(temp.pop()!);
-        return false;
+        return this.popUntil(targetTrackingId) !== null;
+    }
+    
+    /**
+     * Pop packages until the package with targetTrackingId is removed.
+     * Returns the removed package or null if not found. Maintains order for remaining packages.
+     */
+    public popUntil(targetTrackingId: string): Package | null {
+        const temp: Package[] = [];
+        let found: Package | null = null;
+
+        while (this.stack.length) {
+            const p = this.popPackage()!;
+            if (p.trackingId === targetTrackingId) {
+            found = p;
+            break;
+            } else {
+            temp.push(p);
+            }
+        }
+
+        // push back the other popped packages in original order
+        while (temp.length) {
+            this.pushPackage(temp.pop()!);
+        }
+
+        return found;
+    }
+
+    /** Optional: setUsed (for startup reconciliation) */
+    public setUsed(value: number) {
+        if (value < 0) value = 0;
+        if (value > this.capacity) value = this.capacity;
+        (this as any).used = value;
+    }
+    public getUsed(): number {
+        return this.used;
+    }
+
+    // expose stack summary (read-only) 
+    public getStackSummary() { 
+        return this.stack.map(p => ({
+            trackingId: p.trackingId,
+            size: p.size
+        }));
     }
 }

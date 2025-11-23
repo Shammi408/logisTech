@@ -1,0 +1,134 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "LogiTech Warehouse API",
+    "version": "1.0.0",
+    "description": "Minimal OpenAPI for LogiTech — bins, packages, trucks, system health."
+  },
+  "servers": [
+    { "url": "http://localhost:4000", "description": "Local dev" }
+  ],
+  "paths": {
+    "/api/system/health": {
+      "get": {
+        "summary": "System health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SystemHealth" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bins": {
+      "get": {
+        "summary": "List bins (paged)",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 100 } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/bins/seed": {
+      "post": {
+        "summary": "Seed bins (DESTRUCTIVE - truncates tables)",
+        "parameters": [
+          { "name": "count", "in": "query", "schema": { "type": "integer", "default": 100 } }
+        ],
+        "responses": {
+          "200": { "description": "Seeded" },
+          "401": { "description": "Unauthorized" }
+        },
+        "security": [{ "ApiKeyAuth": [] }]
+      }
+    },
+    "/api/packages": {
+      "post": {
+        "summary": "Create & assign package",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePackage" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "assigned/failure" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/api/trucks/{id}/register": {
+      "post": {
+        "summary": "Register a truck",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/RegisterTruck" } }
+          }
+        },
+        "responses": { "200": { "description": "registered" } }
+      }
+    },
+    "/api/trucks/{id}/load": {
+      "post": {
+        "summary": "Load package onto truck",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoadTruck" } }
+          }
+        },
+        "responses": { "200": { "description": "ok/fail" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "x-api-key" }
+    },
+    "schemas": {
+      "CreatePackage": {
+        "type": "object",
+        "properties": {
+          "trackingId": { "type": "string" },
+          "size": { "type": "integer" },
+          "destination": { "type": "string" }
+        },
+        "required": ["size"]
+      },
+      "RegisterTruck": {
+        "type": "object",
+        "properties": { "capacity": { "type": "integer" } },
+        "required": ["capacity"]
+      },
+      "LoadTruck": {
+        "type": "object",
+        "properties": {
+          "trackingId": { "type": "string" },
+          "size": { "type": "integer" },
+          "destination": { "type": "string" }
+        },
+        "required": ["size"]
+      },
+      "SystemHealth": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "dbTime": { "type": "string" },
+          "binCount": { "type": "integer" },
+          "shipmentLogs": { "type": "integer" },
+          "inMemoryBins": { "type": "integer" }
+        }
+      }
+    }
+  }
+}

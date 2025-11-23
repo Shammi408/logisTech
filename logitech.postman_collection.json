@@ -1,0 +1,180 @@
+{
+  "info": {
+    "name": "LogiTech Warehouse API",
+    "_postman_id": "logistech-collection-001",
+    "description": "Postman / Thunder Client collection for the LogiTech API. Swagger screenshot: file:///mnt/data/Screenshot (616).png",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "System / Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/system/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","system","health"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Bins - List",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/bins?page=1&limit=50",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","bins"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "50" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Bins - Top Free",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/bins/free?limit=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","bins","free"],
+          "query": [
+            { "key": "limit", "value": "20" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Bins - Seed (DEStructive)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "x-api-key", "value": "{{apiKey}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/bins/seed?count=200",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","bins","seed"],
+          "query": [{ "key": "count", "value": "200" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Packages - Create & Assign",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"size\": 120,\n  \"destination\": \"DEL\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/packages",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","packages"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Packages - Simulate",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"count\": 20\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/packages/simulate",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","packages","simulate"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Trucks - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"capacity\": 1000\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/trucks/T1/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","trucks","T1","register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Trucks - Load Package",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"size\": 100,\n  \"trackingId\": \"TR-1\",\n  \"destination\": \"OUT\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/trucks/T1/load",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","trucks","T1","load"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Trucks - Rollback Load",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/trucks/T1/rollback/TR-1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","trucks","T1","rollback","TR-1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Trucks - State",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/trucks/T1/state",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","trucks","T1","state"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000", "type": "string" },
+    { "key": "apiKey", "value": "supersecretkey123", "type": "string" }
+  ]
+}

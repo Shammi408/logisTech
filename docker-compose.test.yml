@@ -1,0 +1,19 @@
+services:
+  dbtest:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: logi
+      POSTGRES_PASSWORD: logi_pass
+      POSTGRES_DB: logistech_test
+    ports:
+      - "55433:5432"
+    volumes:
+      - logistech_test_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U logi -d logistech_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+volumes:
+  logistech_test_pgdata:
