@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: logi
+      POSTGRES_PASSWORD: logi_pass
+      POSTGRES_DB: logistech
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # automatically run migrations placed in ./migrations on first start
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+
+  # optional: lightweight admin UI for DB (useful)
+  pgadmin:
+    image: dpage/pgadmin4:7
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
