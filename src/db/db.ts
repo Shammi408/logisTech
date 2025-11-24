@@ -14,25 +14,19 @@ const pool = new Pool({
 pool.on("error", (err) => {
   // Log the pool error; do NOT rethrow
   // This avoids an unhandled 'error' event when the DB is terminated by docker-compose down
-  // You can extend this to send the error to your logger instead of console.error.
+  // We can extend this to send the error to your logger instead of console.error.
   console.error("PG Pool error:", err && err.message ? err.message : err);
 });
 
 export default {
-  // simple query helper
   query: (text: string, params?: any[]) => pool.query(text, params),
-
   // helper to get a client for transactions
   getClient: async () => {
     const client = await pool.connect();
     return client;
   },
-
-  // expose the pool if needed
-  pool,
-
-  // gracefully close the pool (useful in tests / app shutdown)
-  end: async () => {
+  pool, //expose the pool if needed
+  end: async () => { // gracefully close the pool (useful in tests / app shutdown)
     try {
       await pool.end();
       // optional: console.log("PG pool closed");

@@ -9,6 +9,9 @@ import swaggerUi from "swagger-ui-express";
 import * as openapiDoc from "./openapi.json";
 import { LogiMaster } from "../core/LogiMaster";
 import db from "../db/db";
+import utilizationRouter from "./routes/utilization";
+import destinationsRouter from "./routes/destination";
+
 
 const app = express();
 app.use(cors());
@@ -20,6 +23,8 @@ app.use("/api/bins", binsRouter);
 app.use("/api/packages", packagesRouter);
 app.use("/api/trucks", trucksRouter);
 app.use("/api/system", systemRouter);
+app.use("/api/system/utilization", utilizationRouter);
+app.use("/api/analytics/destinations", destinationsRouter);
 
 app.use((err: any, req: any, res: any, next: any) => {
   console.error(err);

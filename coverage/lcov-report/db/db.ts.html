@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">63.63% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/6</span>
+                <span class='fraction'>7/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/10</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>10/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>2/4</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">63.63% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/6</span>
+                <span class='fraction'>7/11</span>
             </div>
         
             
@@ -86,9 +86,24 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -97,8 +112,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -106,10 +129,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Pool } from "pg";
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// src/db/db.ts
+import { Pool } from "pg";
 &nbsp;
 const pool = new Pool({
   user: process.env.PGUSER || "logi",
@@ -117,20 +146,33 @@ const pool = new Pool({
   database: process.env.PGDATABASE || "logistech",
   password: process.env.PGPASSWORD || "logi_pass",
   port: Number(process.env.PGPORT || 5433),
-  max: 10
+  max: 10,
+});
+&nbsp;
+// Prevent Node from crashing on pool errors (e.g. when Postgres is shutdown by tests)
+pool.on("error", <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {
+  // Log the pool error; do NOT rethrow
+  // This avoids an unhandled 'error' event when the DB is terminated by docker-compose down
+  // We can extend this to send the error to your logger instead of console.error.
+<span class="cstat-no" title="statement not covered" >  console.error("PG Pool error:", err &amp;&amp; err.message ? err.message : err);</span>
 });
 &nbsp;
 export default {
-  pool,
+  query: (text: string, params?: any[]) =&gt; pool.query(text, params),
   // helper to get a client for transactions
-<span class="fstat-no" title="function not covered" >  async </span>getClient() {
+  getClient: <span class="fstat-no" title="function not covered" >async </span>() =&gt; {
     const client = <span class="cstat-no" title="statement not covered" >await pool.connect();</span>
 <span class="cstat-no" title="statement not covered" >    return client;</span>
   },
-  // simple query helper
-<span class="fstat-no" title="function not covered" >  async </span>query(text: string, params?: any[]) {
-<span class="cstat-no" title="statement not covered" >    return pool.query(text, params);</span>
-  }
+  pool, //expose the pool if needed
+  end: async () =&gt; { // gracefully close the pool (useful in tests / app shutdown)
+    try {
+      await pool.end();
+      // optional: console.log("PG pool closed");
+    } catch (e) {
+<span class="cstat-no" title="statement not covered" >      console.warn("Error closing PG pool:", e);</span>
+    }
+  },
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -139,7 +181,7 @@ export default {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-23T14:37:13.660Z
+                at 2025-11-24T07:54:41.261Z
             </div>
         <script src="../prettify.js"></script>
         <script>
